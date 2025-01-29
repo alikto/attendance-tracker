@@ -39,7 +39,7 @@ class UserTest {
         userDTO.setPassword("password");
         userDTO.setRole(UserType.STUDENT);
 
-        user = UserFactory.createUser(userDTO.getRole(), userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
+        user = UserFactory.createUser(userDTO);
         user.setId(1L);
     }
 

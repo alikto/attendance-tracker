@@ -21,15 +21,11 @@ public class UserService {
     }
 
     public UserDTO registerUser(UserDTO request) {
-        User user = UserFactory.createUser(
-                request.getRole(),
-                request.getName(),
-                request.getEmail(),
-                request.getPassword()
-        );
+        User user = UserFactory.createUser(request); // This now takes the full DTO
         user = userRepository.save(user);
         return mapToDto(user);
     }
+
 
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
