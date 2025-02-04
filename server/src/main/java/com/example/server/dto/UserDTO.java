@@ -26,4 +26,7 @@ public class UserDTO {
 
     private UserType role;
 
+    private Long studentNumber;
+    private String facultyId;
+
 }

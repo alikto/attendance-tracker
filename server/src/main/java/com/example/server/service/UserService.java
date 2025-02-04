@@ -1,8 +1,13 @@
 package com.example.server.service;
 
 import com.example.server.dto.UserDTO;
+import com.example.server.entity.Faculty;
+import com.example.server.entity.Student;
+import com.example.server.entity.Teacher;
 import com.example.server.entity.User;
 import com.example.server.factory.UserFactory;
+import com.example.server.mapper.UserMapper;
+import com.example.server.repository.FacultyRepository;
 import com.example.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,19 +16,38 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final FacultyRepository facultyRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, FacultyRepository facultyRepository) {
         this.userRepository = userRepository;
+        this.facultyRepository = facultyRepository;
     }
 
-    public UserDTO registerUser(UserDTO request) {
-        User user = UserFactory.createUser(request); // This now takes the full DTO
-        user = userRepository.save(user);
-        return mapToDto(user);
+    public UserDTO registerUser(UserDTO dto) {
+
+        Faculty faculty = facultyRepository.findById(Long.parseLong(dto.getFacultyId()))
+                .orElseThrow(() -> new IllegalArgumentException("Faculty not found"));
+
+        User user = UserFactory.createUser(dto, faculty);
+        userRepository.save(user);
+        UserDTO userDTOResult = UserMapper.INSTANCE.userToDto(user);
+
+        if (user instanceof Student) {
+            userDTOResult.setFacultyId(((Student) user).getFaculty().getId().toString());
+            userDTOResult.setStudentNumber(((Student) user).getStudentNumber());
+        } else if (user instanceof Teacher) {
+            userDTOResult.setFacultyId(((Teacher) user).getFaculty().getId().toString());
+        }
+
+        // Save the user entity
+
+
+        return userDTOResult;
     }
 
 

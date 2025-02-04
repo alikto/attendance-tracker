@@ -12,8 +12,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Student extends User {
-    public Student(String name, String email, String password) {
+    @ManyToOne
+    @JoinColumn(name = "facultyId")
+    private Faculty faculty;
+
+    private long studentNumber;
+
+    public Student(String name, String email, String password, Long studentNumber, Faculty faculty) {
         super(name, email, password, UserType.STUDENT);
+        this.faculty = faculty;
+        this.studentNumber = studentNumber;
     }
 }
 

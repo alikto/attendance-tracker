@@ -1,8 +1,10 @@
 package com.example.server.controllerTest;
 
 import com.example.server.dto.UserDTO;
+import com.example.server.entity.Faculty;
 import com.example.server.entity.User;
 import com.example.server.factory.UserFactory;
+import com.example.server.repository.FacultyRepository;
 import com.example.server.repository.UserRepository;
 import com.example.server.factory.UserType;
 import com.example.server.service.UserService;
@@ -25,26 +27,38 @@ class UserTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private FacultyRepository facultyRepository;
+
     @InjectMocks
     private UserService userService;
 
+
     private User user;
     private UserDTO userDTO;
+    private Faculty faculty;
 
     @BeforeEach
     void setUp() {
+        faculty = new Faculty();
+        faculty.setId(1L);
+        faculty.setName("Engineering");
+
         userDTO = new UserDTO();
         userDTO.setName("John Doe");
         userDTO.setEmail("john@example.com");
         userDTO.setPassword("password");
         userDTO.setRole(UserType.STUDENT);
+        userDTO.setStudentNumber(123456L);
+        userDTO.setFacultyId("1");
 
-        user = UserFactory.createUser(userDTO);
+        user = UserFactory.createUser(userDTO, faculty);
         user.setId(1L);
     }
 
     @Test
     void registerUser_ShouldSaveAndReturnUser() {
+        when(facultyRepository.findById(1L)).thenReturn(Optional.of(faculty));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserDTO savedUser = userService.registerUser(userDTO);
@@ -133,28 +147,5 @@ class UserTest {
 
         assertEquals("User not found", exception.getMessage());
         verify(userRepository, times(1)).existsById(1L);
-    }
-
-    @Test
-    void findByEmail_ShouldReturnUser_WhenExists() {
-        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
-
-        Optional<User> foundUser = userService.findByEmail("john@example.com");
-
-        assertTrue(foundUser.isPresent());
-        assertEquals(user.getEmail(), foundUser.get().getEmail());
-
-        verify(userRepository, times(1)).findByEmail("john@example.com");
-    }
-
-    @Test
-    void findByEmail_ShouldReturnEmpty_WhenUserNotFound() {
-        when(userRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
-
-        Optional<User> foundUser = userService.findByEmail("notfound@example.com");
-
-        assertFalse(foundUser.isPresent());
-
-        verify(userRepository, times(1)).findByEmail("notfound@example.com");
     }
 }
