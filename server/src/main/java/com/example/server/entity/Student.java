@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class Student extends User {
     @ManyToOne
-    @JoinColumn(name = "facultyId")
+    @JoinColumn(name = "faculty_Id")
     private Faculty faculty;
 
     private long studentNumber;
