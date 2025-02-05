@@ -2,6 +2,7 @@ package com.example.server.dto;
 
 
 import com.example.server.factory.UserType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class UserDTO {
     @NotBlank(message = "Password is required")
     private String password;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private UserType role;
 
     private Long studentNumber;

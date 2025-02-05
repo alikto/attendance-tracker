@@ -9,11 +9,10 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface TeacherMapper extends UserMapper {
 
-    // Use @InheritConfiguration to inherit common mappings from UserMapper
-    @InheritConfiguration // Mapping faculty-specific fields
+    @InheritConfiguration
     UserDTO teacherToDto(Teacher teacher);
 
     @InheritConfiguration
-    @Mapping(target = "faculty", ignore = true) // Faculty handled manually
+    @Mapping(target = "faculty", ignore = true)
     Teacher dtoToTeacher(UserDTO userDTO);
 }

@@ -1,18 +1,18 @@
 package com.example.server.mapper;
 
 import com.example.server.dto.UserDTO;
-import com.example.server.entity.Student;
+import com.example.server.entity.Admin;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+
 @Mapper
-public interface StudentMapper extends UserMapper {
+public interface AdminMapper extends UserMapper {
 
     @InheritConfiguration
-    UserDTO studentToDto(Student student);
+    UserDTO adminToDto(Admin admin);
 
     @InheritConfiguration
-    @Mapping(target = "faculty", ignore = true)
-    Student dtoToStudent(UserDTO userDTO);
+    Admin dtoToAdmin(UserDTO userDTO);
 }

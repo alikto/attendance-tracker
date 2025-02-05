@@ -1,4 +1,4 @@
-package com.example.server.controllerTest;
+package com.example.server.serviceTest;
 
 import com.example.server.entity.Faculty;
 import com.example.server.repository.FacultyRepository;
