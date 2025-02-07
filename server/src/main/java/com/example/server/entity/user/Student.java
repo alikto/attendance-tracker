@@ -1,5 +1,6 @@
 package com.example.server.entity.user;
 
+import com.example.server.entity.Attendance;
 import com.example.server.entity.Enrollment;
 import com.example.server.entity.Faculty;
 import com.example.server.factory.UserType;
@@ -25,6 +26,9 @@ public class Student extends User {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<Attendance> attendances;
 
     public Student(String name, String email, String password, Long studentNumber, Faculty faculty) {
         super(name, email, password, UserType.STUDENT);

@@ -31,6 +31,9 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Attendance> attendances;
+
     public Course(String name, Faculty faculty, Teacher teacher) {
         this.name = name;
         this.faculty = faculty;
