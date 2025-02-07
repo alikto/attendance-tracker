@@ -29,9 +29,13 @@ public class AttendanceService {
     public Attendance recordAttendance(AttendanceDTO attendanceDTO) {
         Optional<User> studentOpt = userRepository.findById(attendanceDTO.getStudentId());
 
+        if (studentOpt.isEmpty()) {
+            throw new RuntimeException("Invalid course or student ID");
+        }
+
         Optional<Course> courseOpt = courseRepository.findById(attendanceDTO.getCourseId());
 
-        if (courseOpt.isEmpty() || studentOpt.isEmpty()) {
+        if (courseOpt.isEmpty()) {
             throw new RuntimeException("Invalid course or student ID");
         }
 
