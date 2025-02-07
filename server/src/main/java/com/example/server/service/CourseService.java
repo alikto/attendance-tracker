@@ -31,11 +31,11 @@ public class CourseService {
         Optional<Faculty> facultyOptional = facultyRepository.findById(courseDTO.getFacultyId());
 
         if (teacherOptional.isEmpty()) {
-            throw new RuntimeException("Teacher with ID " + courseDTO.getTeacherId() + " not found.");
+            throw new RuntimeException("Teacher not found.");
         }
 
         if (facultyOptional.isEmpty()) {
-            throw new RuntimeException("Faculty with ID " + courseDTO.getFacultyId() + " not found.");
+            throw new RuntimeException("Faculty not found.");
         }
 
         if (!(teacherOptional.get() instanceof Teacher teacher)) {
@@ -51,7 +51,7 @@ public class CourseService {
     public void deleteCourse(Long courseId) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
         if (courseOptional.isEmpty()) {
-            throw new RuntimeException("Course with ID " + courseId + " not found.");
+            throw new RuntimeException("Course not found.");
         }
         courseRepository.delete(courseOptional.get());
     }
@@ -60,7 +60,7 @@ public class CourseService {
         Optional<User> teacherOptional = userRepository.findById(teacherId);
 
         if (teacherOptional.isEmpty()) {
-            throw new RuntimeException("Teacher with ID " + teacherId + " not found.");
+            throw new RuntimeException("Teacher not found.");
         }
         if (!(teacherOptional.get() instanceof Teacher)) {
             throw new RuntimeException("User is not a Teacher.");

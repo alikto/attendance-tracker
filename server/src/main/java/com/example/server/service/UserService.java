@@ -29,11 +29,9 @@ public class UserService {
     }
 
     public UserDTO registerUser(UserDTO dto) {
-        Faculty faculty = null;
-        if (dto.getFacultyId() != null){
-            faculty = facultyRepository.findById(Long.parseLong(dto.getFacultyId()))
-                    .orElseThrow(() -> new IllegalArgumentException("Faculty not found"));
-        }
+        assert dto.getFacultyId() != null;
+        Faculty faculty = facultyRepository.findById(Long.parseLong(dto.getFacultyId()))
+                .orElseThrow(() -> new IllegalArgumentException("Faculty not found"));
 
         User user = UserFactory.createUser(dto, faculty);
         userRepository.save(user);
@@ -85,8 +83,5 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
-
-
 
 }
