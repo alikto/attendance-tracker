@@ -13,13 +13,14 @@ public class UserFactory {
 
     public static User createUser(UserDTO userDTO, Faculty faculty) {
         UserType role = userDTO.getRole();
-        return switch (role) {
-            case STUDENT ->
-                    new Student(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword(), userDTO.getStudentNumber(), faculty);
+        User user = switch (role) {
+            case STUDENT -> new Student(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword(), userDTO.getStudentNumber(), faculty);
             case TEACHER -> new Teacher(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword(), faculty);
             case ADMIN -> new Admin(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
             default -> throw new IllegalArgumentException("Invalid role type: " + role);
         };
+        System.out.println("Created user: " + user.getName());  // Log or breakpoint here
+        return user;
     }
 
 }

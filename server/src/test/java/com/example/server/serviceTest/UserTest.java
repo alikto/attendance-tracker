@@ -62,6 +62,7 @@ class UserTest {
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserDTO savedUser = userService.registerUser(userDTO);
+        System.out.println("savedUser: "+ savedUser.getName());
 
         assertNotNull(savedUser);
         assertEquals(userDTO.getName(), savedUser.getName());
