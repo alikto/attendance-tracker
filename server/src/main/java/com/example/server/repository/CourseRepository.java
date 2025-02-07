@@ -2,7 +2,7 @@ package com.example.server.repository;
 
 import com.example.server.entity.Course;
 import com.example.server.entity.Faculty;
-import com.example.server.entity.Teacher;
+import com.example.server.entity.user.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

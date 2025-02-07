@@ -2,7 +2,7 @@ package com.example.server.serviceTest;
 
 import com.example.server.dto.UserDTO;
 import com.example.server.entity.Faculty;
-import com.example.server.entity.User;
+import com.example.server.entity.user.User;
 import com.example.server.factory.UserFactory;
 import com.example.server.repository.FacultyRepository;
 import com.example.server.repository.UserRepository;

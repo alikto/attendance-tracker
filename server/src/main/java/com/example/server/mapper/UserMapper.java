@@ -1,7 +1,7 @@
 package com.example.server.mapper;
 
 import com.example.server.dto.UserDTO;
-import com.example.server.entity.User;
+import com.example.server.entity.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

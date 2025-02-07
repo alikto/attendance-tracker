@@ -1,9 +1,13 @@
 package com.example.server.entity;
 
+import com.example.server.entity.user.Teacher;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -20,10 +24,12 @@ public class Course {
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
 
-    // Foreign Key to Teacher
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     public Course(String name, Faculty faculty, Teacher teacher) {
         this.name = name;

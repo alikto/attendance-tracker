@@ -3,7 +3,7 @@ package com.example.server.serviceTest;
 import com.example.server.dto.CourseDTO;
 import com.example.server.entity.Course;
 import com.example.server.entity.Faculty;
-import com.example.server.entity.Teacher;
+import com.example.server.entity.user.Teacher;
 import com.example.server.repository.CourseRepository;
 import com.example.server.repository.FacultyRepository;
 import com.example.server.repository.UserRepository;

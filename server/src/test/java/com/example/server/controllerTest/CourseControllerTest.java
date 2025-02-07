@@ -4,7 +4,7 @@ import com.example.server.controller.CourseController;
 import com.example.server.dto.CourseDTO;
 import com.example.server.entity.Course;
 import com.example.server.entity.Faculty;
-import com.example.server.entity.Teacher;
+import com.example.server.entity.user.Teacher;
 import com.example.server.service.CourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

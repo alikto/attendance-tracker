@@ -2,6 +2,9 @@ package com.example.server.service;
 
 import com.example.server.dto.UserDTO;
 import com.example.server.entity.*;
+import com.example.server.entity.user.Student;
+import com.example.server.entity.user.Teacher;
+import com.example.server.entity.user.User;
 import com.example.server.factory.UserFactory;
 import com.example.server.mapper.UserMapper;
 import com.example.server.repository.FacultyRepository;

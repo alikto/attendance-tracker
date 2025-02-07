@@ -1,7 +1,7 @@
 package com.example.server.mapper;
 
 import com.example.server.dto.UserDTO;
-import com.example.server.entity.Teacher;
+import com.example.server.entity.user.Teacher;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

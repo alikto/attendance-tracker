@@ -3,8 +3,8 @@ package com.example.server.service;
 import com.example.server.dto.CourseDTO;
 import com.example.server.entity.Course;
 import com.example.server.entity.Faculty;
-import com.example.server.entity.Teacher;
-import com.example.server.entity.User;
+import com.example.server.entity.user.Teacher;
+import com.example.server.entity.user.User;
 import com.example.server.repository.CourseRepository;
 import com.example.server.repository.FacultyRepository;
 import com.example.server.repository.UserRepository;
@@ -39,7 +39,7 @@ public class CourseService {
         }
 
         if (!(teacherOptional.get() instanceof Teacher teacher)) {
-            throw new RuntimeException("User with ID " + courseDTO.getTeacherId() + " is not a Teacher.");
+            throw new RuntimeException("User is not a Teacher.");
         }
 
         Faculty faculty = facultyOptional.get();

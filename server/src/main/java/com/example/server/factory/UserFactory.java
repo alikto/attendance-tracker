@@ -2,6 +2,10 @@ package com.example.server.factory;
 
 import com.example.server.dto.UserDTO;
 import com.example.server.entity.*;
+import com.example.server.entity.user.Admin;
+import com.example.server.entity.user.Student;
+import com.example.server.entity.user.Teacher;
+import com.example.server.entity.user.User;
 import org.springframework.stereotype.Component;
 
 @Component
