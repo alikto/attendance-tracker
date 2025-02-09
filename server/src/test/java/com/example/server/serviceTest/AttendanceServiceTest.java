@@ -6,6 +6,7 @@ import com.example.server.entity.Course;
 import com.example.server.entity.user.Student;
 import com.example.server.entity.user.Teacher;
 import com.example.server.entity.user.User;
+import com.example.server.mapper.AttendanceMapper;
 import com.example.server.repository.AttendanceRepository;
 import com.example.server.repository.CourseRepository;
 import com.example.server.repository.UserRepository;
@@ -46,29 +47,26 @@ public class AttendanceServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // Initialize the test data
         student = new Student();
         student.setId(1L);
 
         course = new Course();
         course.setId(101L);
 
-        attendanceDTO = new AttendanceDTO(1L, 101L, LocalDate.now(), true);
+        attendanceDTO = new AttendanceDTO(1L,1L, 101L, LocalDate.now(), true);
 
         attendance = new Attendance(student, course, LocalDate.now(), true);
+        attendance.setId(1L);
     }
 
     @Test
     public void testRecordAttendance_Success() {
-        // Mock the repositories
         when(userRepository.findById(attendanceDTO.getStudentId())).thenReturn(Optional.of(student));
         when(courseRepository.findById(attendanceDTO.getCourseId())).thenReturn(Optional.of(course));
         when(attendanceRepository.save(any(Attendance.class))).thenReturn(attendance);
 
-        // Call the service method
         Attendance result = attendanceService.recordAttendance(attendanceDTO);
 
-        // Assertions
         assertNotNull(result);
         assertEquals(student, result.getStudent());
         assertEquals(course, result.getCourse());
@@ -82,11 +80,9 @@ public class AttendanceServiceTest {
 
     @Test
     public void testRecordAttendance_InvalidStudent() {
-        // Mock the repositories
         when(userRepository.findById(attendanceDTO.getStudentId())).thenReturn(Optional.empty());
         when(courseRepository.findById(attendanceDTO.getCourseId())).thenReturn(Optional.of(course)); // Mock course lookup
 
-        // Call the service method and expect an exception
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             attendanceService.recordAttendance(attendanceDTO);
         });
@@ -94,25 +90,19 @@ public class AttendanceServiceTest {
         System.out.println("GET MESSAGE"+thrown.getMessage());
         assertEquals("Invalid course or student ID", thrown.getMessage());
 
-        // Verify that courseRepository is not called when the student is invalid
         verify(courseRepository, times(0)).findById(anyLong());
         verify(attendanceRepository, times(0)).save(any(Attendance.class));
     }
 
-
-
     @Test
     public void testRecordAttendance_InvalidCourse() {
-        // Mock the repositories
         when(userRepository.findById(attendanceDTO.getStudentId())).thenReturn(Optional.of(student));
         when(courseRepository.findById(attendanceDTO.getCourseId())).thenReturn(Optional.empty());
 
-        // Call the service method and expect an exception
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             attendanceService.recordAttendance(attendanceDTO);
         });
 
-        // Assertions
         assertEquals("Invalid course or student ID", thrown.getMessage());
 
         verify(userRepository, times(1)).findById(attendanceDTO.getStudentId());
@@ -122,20 +112,16 @@ public class AttendanceServiceTest {
 
     @Test
     public void testRecordAttendance_UserIsNotStudent() {
-        // Create a User that is not a Student
         User nonStudentUser = new Teacher();
         nonStudentUser.setId(1L);
 
-        // Mock the repositories
         when(userRepository.findById(attendanceDTO.getStudentId())).thenReturn(Optional.of(nonStudentUser));
         when(courseRepository.findById(attendanceDTO.getCourseId())).thenReturn(Optional.of(course));
 
-        // Call the service method and expect an exception
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             attendanceService.recordAttendance(attendanceDTO);
         });
 
-        // Assertions
         assertEquals("User is not Student", thrown.getMessage());
 
         verify(userRepository, times(1)).findById(attendanceDTO.getStudentId());
@@ -145,59 +131,58 @@ public class AttendanceServiceTest {
 
     @Test
     public void testGetAttendanceByStudent() {
-        // Mock the repository
         when(attendanceRepository.findByStudentId(1L)).thenReturn(Collections.singletonList(attendance));
 
-        // Call the service method
-        List<Attendance> result = attendanceService.getAttendanceByStudent(1L);
+        List<AttendanceDTO> result = attendanceService.getAttendanceByStudent(1L);
 
-        // Assertions
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(attendance, result.get(0));
+        AttendanceDTO actual = result.get(0);
+        assertEquals(attendanceDTO.getId(), actual.getId());
+        assertEquals(attendanceDTO.getStudentId(), actual.getStudentId());
+        assertEquals(attendanceDTO.getCourseId(), actual.getCourseId());
+        assertEquals(attendanceDTO.getDate(), actual.getDate());
+        assertEquals(attendanceDTO.isPresent(), actual.isPresent());
 
         verify(attendanceRepository, times(1)).findByStudentId(1L);
     }
 
     @Test
     public void testGetAttendanceByCourse() {
-        // Mock the repository
         when(attendanceRepository.findByCourseId(101L)).thenReturn(Collections.singletonList(attendance));
 
-        // Call the service method
-        List<Attendance> result = attendanceService.getAttendanceByCourse(101L);
+        List<AttendanceDTO> result = attendanceService.getAttendanceByCourse(101L);
 
-        // Assertions
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(attendance, result.get(0));
+        AttendanceDTO actual = result.get(0);
+        assertEquals(attendanceDTO.getId(), actual.getId());
+        assertEquals(attendanceDTO.getStudentId(), actual.getStudentId());
+        assertEquals(attendanceDTO.getCourseId(), actual.getCourseId());
+        assertEquals(attendanceDTO.getDate(), actual.getDate());
+        assertEquals(attendanceDTO.isPresent(), actual.isPresent());
 
         verify(attendanceRepository, times(1)).findByCourseId(101L);
     }
 
+
     @Test
     public void testDeleteAttendance() {
-        // Mock the repository
         doNothing().when(attendanceRepository).deleteById(1L);
 
-        // Call the service method
         attendanceService.deleteAttendance(1L);
 
-        // Assertions
         verify(attendanceRepository, times(1)).deleteById(1L);
     }
 
     @Test
     public void testDeleteAttendance_NotFound() {
-        // Mock the repository to throw EmptyResultDataAccessException
         doThrow(new EmptyResultDataAccessException(1)).when(attendanceRepository).deleteById(1L);
 
-        // Call the service method and expect an exception
         EmptyResultDataAccessException thrown = assertThrows(EmptyResultDataAccessException.class, () -> {
             attendanceService.deleteAttendance(1L);
         });
 
-        // Assertions
         assertEquals("Incorrect result size: expected 1, actual 0", thrown.getMessage());
 
         verify(attendanceRepository, times(1)).deleteById(1L);

@@ -142,18 +142,6 @@ class CourseControllerTest {
     }
 
     @Test
-    void testGetCoursesByName() throws Exception {
-        List<Course> courses = Arrays.asList(course);
-        Mockito.when(courseService.getCoursesByName("Software Engineering")).thenReturn(courses);
-
-        mockMvc.perform(get("/courses/name/{courseName}", "Software Engineering"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].name").value("Software Engineering"));
-    }
-
-    @Test
     void testGetCourseById() throws Exception {
         Mockito.when(courseService.getCourseById(1L)).thenReturn(course);
 

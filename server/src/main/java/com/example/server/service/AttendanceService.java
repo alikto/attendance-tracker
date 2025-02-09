@@ -5,6 +5,7 @@ import com.example.server.entity.Attendance;
 import com.example.server.entity.Course;
 import com.example.server.entity.user.Student;
 import com.example.server.entity.user.User;
+import com.example.server.mapper.AttendanceMapper;
 import com.example.server.repository.AttendanceRepository;
 import com.example.server.repository.CourseRepository;
 import com.example.server.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AttendanceService {
@@ -47,12 +49,20 @@ public class AttendanceService {
         return attendanceRepository.save(attendance);
     }
 
-    public List<Attendance> getAttendanceByStudent(Long studentId) {
-        return attendanceRepository.findByStudentId(studentId);
+    public List<AttendanceDTO> getAttendanceByStudent(Long studentId) {
+        List<Attendance> attendances = attendanceRepository.findByStudentId(studentId);
+        return attendances.stream()
+                .peek(attendance -> System.out.println("Calling attendanceToDto for Attendance: " + attendance))  // This logs before mapping
+                .map(AttendanceMapper.INSTANCE::attendanceToDto)
+                .collect(Collectors.toList());
     }
 
-    public List<Attendance> getAttendanceByCourse(Long courseId) {
-        return attendanceRepository.findByCourseId(courseId);
+    public List<AttendanceDTO> getAttendanceByCourse(Long courseId) {
+        List<Attendance> attendances = attendanceRepository.findByCourseId(courseId);
+        return attendances.stream()
+                .peek(attendance -> System.out.println("Calling attendanceToDto for Attendance: " + attendance.getId()))  // This logs before mapping
+                .map(AttendanceMapper.INSTANCE::attendanceToDto)
+                .collect(Collectors.toList());
     }
 
     public void deleteAttendance(Long attendanceId){

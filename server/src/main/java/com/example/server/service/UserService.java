@@ -6,6 +6,9 @@ import com.example.server.entity.user.Student;
 import com.example.server.entity.user.Teacher;
 import com.example.server.entity.user.User;
 import com.example.server.factory.UserFactory;
+import com.example.server.factory.UserType;
+import com.example.server.mapper.StudentMapper;
+import com.example.server.mapper.TeacherMapper;
 import com.example.server.mapper.UserMapper;
 import com.example.server.repository.FacultyRepository;
 import com.example.server.repository.UserRepository;
@@ -29,34 +32,34 @@ public class UserService {
     }
 
     public UserDTO registerUser(UserDTO dto) {
-        assert dto.getFacultyId() != null;
-        Faculty faculty = facultyRepository.findById(Long.parseLong(dto.getFacultyId()))
-                .orElseThrow(() -> new IllegalArgumentException("Faculty not found"));
+        if (dto.getRole() != UserType.ADMIN && dto.getFacultyId() == null) {
+            throw new IllegalArgumentException("Faculty must be provided for STUDENT and TEACHER roles");
+        }
+
+        Faculty faculty = null;
+        if (dto.getRole() != UserType.ADMIN) {
+            faculty = facultyRepository.findById(Long.parseLong(dto.getFacultyId()))
+                    .orElseThrow(() -> new IllegalArgumentException("Faculty not found"));
+        }
 
         User user = UserFactory.createUser(dto, faculty);
         userRepository.save(user);
-        UserDTO userDTOResult = UserMapper.INSTANCE.userToDto(user);
 
-        if (user instanceof Student) {
-            userDTOResult.setFacultyId(((Student) user).getFaculty().getId().toString());
-            userDTOResult.setStudentNumber(((Student) user).getStudentNumber());
-        } else if (user instanceof Teacher) {
-            userDTOResult.setFacultyId(((Teacher) user).getFaculty().getId().toString());
-        }
-        return userDTOResult;
+        return mapUserToDto(user);
     }
+
 
 
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return UserMapper.INSTANCE.userToDto(user);
+        return mapUserToDto(user);
     }
 
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(UserMapper.INSTANCE::userToDto)
+                .map(this::mapUserToDto) // Use dynamic mapping based on type
                 .collect(Collectors.toList());
     }
 
@@ -67,10 +70,28 @@ public class UserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
+
         //user.setRole(request.getRole());
 
+        if (user instanceof Student student) {
+            if (request.getStudentNumber() != null) {
+                student.setStudentNumber(request.getStudentNumber());
+            }
+            if (request.getFacultyId() != null) {
+                Faculty faculty = facultyRepository.findById(Long.parseLong(request.getFacultyId()))
+                        .orElseThrow(() -> new RuntimeException("Faculty not found"));
+                student.setFaculty(faculty);
+            }
+        } else if (user instanceof Teacher teacher) {
+            if (request.getFacultyId() != null) {
+                Faculty faculty = facultyRepository.findById(Long.parseLong(request.getFacultyId()))
+                        .orElseThrow(() -> new RuntimeException("Faculty not found"));
+                teacher.setFaculty(faculty);
+            }
+        }
+
         user = userRepository.save(user);
-        return UserMapper.INSTANCE.userToDto(user);
+        return mapUserToDto(user);
     }
 
     public void deleteUser(Long id) {
@@ -84,4 +105,13 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    private UserDTO mapUserToDto(User user) {
+        if (user instanceof Student) {
+            return StudentMapper.INSTANCE.studentToDto((Student) user);
+        } else if (user instanceof Teacher) {
+            return TeacherMapper.INSTANCE.teacherToDto((Teacher) user);
+        } else {
+            return UserMapper.INSTANCE.userToDto(user);
+        }
+    }
 }

@@ -76,10 +76,6 @@ public class CourseService {
         return courseRepository.findByFaculty(facultyOptional.get());
     }
 
-    public List<Course> getCoursesByName(String courseName) {
-        return courseRepository.findByNameContainingIgnoreCase(courseName);
-    }
-
     public Course getCourseById(Long courseId) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
         if (courseOptional.isEmpty()) {

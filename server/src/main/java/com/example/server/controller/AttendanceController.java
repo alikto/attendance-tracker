@@ -20,7 +20,7 @@ public class AttendanceController {
     }
 
     @PostMapping
-    public ResponseEntity<Attendance> recordAttendance(@RequestBody AttendanceDTO attendanceDTO) {
+    public ResponseEntity<Attendance> createAttendance(@RequestBody AttendanceDTO attendanceDTO) {
         try {
             Attendance attendance = attendanceService.recordAttendance(attendanceDTO);
             return new ResponseEntity<>(attendance, HttpStatus.CREATED);
@@ -30,13 +30,18 @@ public class AttendanceController {
     }
 
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<Attendance>> getAttendanceByStudent(@PathVariable Long studentId) {
-        return new ResponseEntity<>(attendanceService.getAttendanceByStudent(studentId), HttpStatus.OK);
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceByStudent(@PathVariable Long studentId) {
+        List<AttendanceDTO> attendanceDTOs = attendanceService.getAttendanceByStudent(studentId);
+
+        return new ResponseEntity<>(attendanceDTOs, HttpStatus.OK);
     }
 
+
     @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<Attendance>> getAttendanceByCourse(@PathVariable Long courseId) {
-        return new ResponseEntity<>(attendanceService.getAttendanceByCourse(courseId), HttpStatus.OK);
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceByCourse(@PathVariable Long courseId) {
+        List<AttendanceDTO> attendanceDTOs = attendanceService.getAttendanceByCourse(courseId);
+
+        return new ResponseEntity<>(attendanceDTOs, HttpStatus.OK);
     }
 
     @DeleteMapping("/{attendanceId}")

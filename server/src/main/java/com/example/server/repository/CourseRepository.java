@@ -13,5 +13,4 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findByFaculty(Faculty faculty);
 
-    List<Course> findByNameContainingIgnoreCase(String courseName);
 }

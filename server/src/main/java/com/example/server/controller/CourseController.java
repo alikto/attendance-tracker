@@ -20,12 +20,16 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<Course> createOrUpdateCourse(@RequestBody CourseDTO courseDTO) {
+    public ResponseEntity<Object> createOrUpdateCourse(@RequestBody CourseDTO courseDTO) {
         try {
+            if (courseDTO.getFacultyId() == null || courseDTO.getTeacherId() == null) {
+                return new ResponseEntity<>("Faculty or teacher is missing!", HttpStatus.BAD_REQUEST);
+            }
+
             Course course = courseService.createOrUpdateCourse(courseDTO);
             return new ResponseEntity<>(course, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -59,11 +63,6 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/name/{courseName}")
-    public ResponseEntity<List<Course>> getCoursesByName(@PathVariable String courseName) {
-        List<Course> courses = courseService.getCoursesByName(courseName);
-        return new ResponseEntity<>(courses, HttpStatus.OK);
-    }
 
     @GetMapping("/{courseId}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long courseId) {

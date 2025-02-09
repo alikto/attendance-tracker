@@ -152,19 +152,6 @@ class CourseServiceTest {
     }
 
     @Test
-    void getCoursesByName_ShouldReturnCourses() {
-        when(courseRepository.findByNameContainingIgnoreCase("Math")).thenReturn(List.of(course));
-
-        List<Course> courses = courseService.getCoursesByName("Math");
-
-        assertNotNull(courses);
-        assertEquals(1, courses.size());
-        assertEquals(course.getName(), courses.get(0).getName());
-
-        verify(courseRepository, times(1)).findByNameContainingIgnoreCase("Math");
-    }
-
-    @Test
     void getCourseById_ShouldReturnCourse_WhenExists() {
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
