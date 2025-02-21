@@ -1,6 +1,7 @@
 package com.example.server.controller;
 
 import com.example.server.dto.AuthenticationRequest;
+import com.example.server.dto.LoginResponse;
 import com.example.server.dto.UserDTO;
 import com.example.server.service.CustomUserDetailsService;
 import com.example.server.service.UserService;
@@ -40,14 +41,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody AuthenticationRequest authenticationRequest){
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody AuthenticationRequest authenticationRequest){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword())
         );
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+        String jwtToken = jwtUtil.generateToken(userDetails);
+        UserDTO userDTO = userService.findByEmail(authenticationRequest.getEmail());
 
-        return jwtUtil.generateToken(userDetails);
+        LoginResponse response = new LoginResponse(jwtToken, userDTO);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/hello")

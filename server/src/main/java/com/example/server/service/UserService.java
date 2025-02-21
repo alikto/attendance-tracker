@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final FacultyRepository facultyRepository;
-
     @Autowired
     public UserService(UserRepository userRepository, FacultyRepository facultyRepository) {
         this.userRepository = userRepository;
@@ -47,8 +45,6 @@ public class UserService {
 
         return mapUserToDto(user);
     }
-
-
 
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -101,8 +97,10 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public UserDTO findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return mapUserToDto(user);
     }
 
     private UserDTO mapUserToDto(User user) {
