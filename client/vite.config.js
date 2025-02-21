@@ -6,10 +6,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://0.0.0.0:8080',
+        target: 'http://localhost:8080', // ✅ Make sure it's localhost, NOT 0.0.0.0
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false, // In case HTTPS causes issues
+        rewrite: (path) => path.replace(/^\/api/, ''), // ✅ Removes '/api' before forwarding
       },
     },
   },
-})
+});
+
